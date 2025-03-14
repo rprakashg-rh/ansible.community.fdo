@@ -15,6 +15,8 @@ tags:
   - device_onboarding
 dependencies:
   ansible.posix: '*'
+  containers.podman: ">=1.16.2"
+
 repository: https://github.com/ansible-collections/community.fdo
 documentation: https://github.com/ansible-collections/community.fdo/blob/main/examples/README.md
 homepage: https://github.com/ansible-collections/community.fdo

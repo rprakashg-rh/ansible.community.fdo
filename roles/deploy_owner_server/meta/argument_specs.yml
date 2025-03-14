@@ -1,0 +1,160 @@
+# Copyright: (c) 2023, Red Hat
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+argument_specs:
+  main:
+    version_added: 1.0.0
+    short_description: Depoloy FDO owner server
+    description:
+      - Deploy and configure FDO owner onboarding server and serviceinfo API server
+    options:
+      fdo_src:
+        description:
+          - Fdo directory path.
+        type: str
+        default: /etc/fdo
+      manufacturing_server_fdo_src:
+        description:
+          - Fdo directory path on the manufacturing server.
+        type: str
+        default: /etc/fdo
+      manufacturing_server:
+        description:
+          - Manufacturing Server URL.
+        type: str
+        default: "{{ groups['manufacturing'][0] }}"
+      copy_manufacturer_certs:
+        description:
+          - Enable fetching manufacturing server certificates & keys.
+        type: bool
+        default: true  
+      rpm:
+        description:
+        - Deploy as RPM package
+        type: bool
+        default: true
+      owner_onboarding_server_ownership_voucher_store_driver_path:
+        description:
+          - Owner vouchers directory path.
+        type: str
+        default: "{{ fdo_src }}/stores/owner_vouchers"
+      owner_onboarding_server_session_store_driver_path:
+        description:
+          - Owner onboarding sessions directory path.
+        type: str
+        default: "{{ fdo_src }}/stores/owner_onboarding_sessions"
+      owner_onboarding_server_trusted_device_keys_path:
+        description:
+          - device_ca_cert.pem file path.
+        type: str
+        default: "{{ fdo_src }}/keys/device_ca_cert.pem"
+      owner_onboarding_server_owner_private_key_path:
+        description:
+          - owner_key.der file path.
+        type: str
+        default: "{{ fdo_src }}/keys/owner_key.der"
+      owner_onboarding_server_bind_ip:
+        description:
+          - The IP address that the owner onboarding server will bind to.
+        type: str
+        default: 0.0.0.0
+      owner_onboarding_server_listen_port_owner_onboarding_server:
+        description:
+          - The port that the owner onboarding server will listen to.
+        type: int
+        default: 8081
+      owner_onboarding_server_listen_port_serviceinfo_api_server:
+        description:
+          - The port that the serviceinfo api server will listen to.
+        type: int
+        default: 8083
+      owner_onboarding_server_service_info_api_authentication_token:
+        description:
+          - Serviceinfo api authentication token. Change to a valid API token
+        type: str
+        default: TestAuthToken
+      owner_onboarding_server_owner_addresses_transport:
+        description:
+          - ...
+        type: str
+        default: http
+      owner_onboarding_server_owner_addresses_dns_name:
+        description:
+        - Owner server DNS name
+        type: str
+      owner_onboarding_server_owner_addresses_ip_address:
+        description:
+          - Owner server IP address. Change to owner server IP.
+        type: str
+        default: 127.0.0.1
+      owner_onboarding_server_report_to_rendezvous_endpoint_enabled:
+        description:
+          - ...
+        type: bool
+        default: true
+      serviceinfo_api_server_service_info_initial_user_username:
+        description:
+          - Deprecated, use serviceinfo_api_server_config instead. Username of the initial user of the serviceinfo api.
+        type: str
+        default: admin
+      serviceinfo_api_server_service_info_initial_user_password:
+        description:
+          - Deprecated, use serviceinfo_api_server_config instead. Password of the initial user of the serviceinfo api.
+        type: str
+        default: admin
+      serviceinfo_api_server_service_info_initial_user_sshkeys:
+        description:
+          - Deprecated, use serviceinfo_api_server_config instead. SSH Keys of the initial user of the serviceinfo api.
+        type: str
+        default: ""
+      serviceinfo_api_server_service_files_path:
+        description:
+          - Deprecated, use serviceinfo_api_server_config instead. Serviceinfo api server service files path.
+        type: str
+        default: /root/resolv.conf
+      serviceinfo_api_server_service_files_source_path:
+        description:
+          - Deprecated, use serviceinfo_api_server_config instead. Serviceinfo api server service files source path.
+        type: str
+        default: /etc/resolv.conf
+      serviceinfo_api_server_bind_ip:
+        description:
+          - The IP address that the owner onboarding server will bind to.
+        type: str
+        default: "{{ owner_onboarding_server_bind_ip }}"
+      serviceinfo_api_server_listen_port_serviceinfo_api_server:
+        description:
+          - The port that the serviceinfo api server will listen to.
+        type: str
+        default: "{{ owner_onboarding_server_listen_port_serviceinfo_api_server}}"
+      serviceinfo_api_server_test_path:
+        description:
+          - Deprecated, use serviceinfo_api_server_config instead. Test directory path.
+        type: str
+        default: /root/test
+      serviceinfo_api_server_diskencryption_clevis_disk_label:
+        description:
+          - Deprecated, use serviceinfo_api_server_config instead.
+        type: str
+        default: /dev/vda4
+      serviceinfo_api_server_device_specific_store_driver_path:
+        description:
+          - Serviceinfo api devices directory path.
+        type: str
+        default: "{{ fdo_src }}/stores/serviceinfo_api_devices"
+      serviceinfo_api_server_service_info_auth_token:
+        description:
+          - Serviceinfo api authorization token.
+        type: str
+        default: TestAdminToken
+      serviceinfo_api_server_admin_auth_token:
+        description:
+          - Serviceinfo api admin authorization token. Change to a valid API token.
+        type: str
+        default: TestAdminToken
+      serviceinfo_api_server_config:
+        description:
+          - Serviceinfo api sequence in YAML format with 2-spaces indentation. If defined and not empty, this configuration will override all other
+            initial_user, files, commands, diskencryption_clevis, and additional_serviceinfo settings.
+        type: str
+        required: false

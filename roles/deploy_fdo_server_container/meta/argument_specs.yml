@@ -1,0 +1,34 @@
+---
+# Copyright: (c) 2023, Red Hat
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+argument_specs:
+  main:
+    version_added: 1.0.0
+    short_description: Deploy FDO server container on podman
+    description:
+      - Deploy FDO server container on podman with quadlet
+    options:
+      description:
+        description: 
+        - Quadlet description
+        type: str
+      container_image:
+        description:
+        - Container Image
+        type: str
+      container_name:
+        description:
+        - Container Name, this will be used to create the quadlet file under /etc/containers/systemd
+        type: str
+      host_port:
+        description:
+        - Host port to map to container
+        type: int
+      container_port:
+        description:
+        - Container port to map to
+        type: int
+      volumes:
+        description:
+        - volumes to mount
+        type: list

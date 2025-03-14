@@ -1,0 +1,57 @@
+---
+# Copyright: (c) 2023, Red Hat
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+- name: Deploy FDO server as rpm
+  when:
+  - rpm
+  block:
+  - name: "Installing {{ server_name }} rpm package"
+    ansible.builtin.dnf:
+      state: present
+      name:
+      - "{{ server_name }}"
+    when:
+    - server_name != 'fdo-serviceinfo-api-server'
+    
+  - name: Start firewalld service
+    ansible.builtin.service:
+      name: firewalld
+      state: started
+  
+  - name: Open Required Ports
+    ansible.posix.firewalld:
+      port: "{{ server_port }}/tcp"
+      permanent: true
+      state: enabled
+      immediate: true
+
+  - name: Set SELinux port type
+    ansible.builtin.shell: semanage port -a -t http_port_t -p tcp {{ server_port }}
+    failed_when: false
+
+  - name: Reload firewall
+    ansible.builtin.systemd:
+      name: firewalld
+      state: reloaded
+
+  - name: Enable and start the server
+    ansible.builtin.systemd:
+      name: "{{ server_name }}"
+      state: started
+      enabled: true
+  
+- name: Check server started successfully
+  ansible.builtin.systemd:
+    name: "{{ server_name }}"
+  register: service_status
+  failed_when: false
+
+- name: Report service status failure
+  ansible.builtin.fail:
+    msg: "{{ server_name }} failed to start"
+  when: service_status.status.ActiveState != 'active'
+
+- name: Report service status success
+  ansible.builtin.debug:
+    msg: "{{ server_name }} started successfully"
+  when: service_status.status.ActiveState == 'active'
