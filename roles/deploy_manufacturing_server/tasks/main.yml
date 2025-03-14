@@ -1,0 +1,82 @@
+---
+# Copyright: (c) 2023, Red Hat
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+- name: Install Packages
+  ansible.builtin.dnf:
+    state: present
+    name:
+      - fdo-admin-cli
+      - firewalld
+      - sshpass
+      - rsync
+      - podman
+
+- name: Start podman service
+  ansbile.builtin.systemd:
+    name: podman
+    state: started
+    enabled: true
+
+- name: Creates FDO Keys Directory
+  ansible.builtin.file:
+    path: "{{ fdo_src }}/keys"
+    state: directory
+    mode: "0775"
+  when: not generate_keys_and_certificates | bool
+
+- name: Create Manufacturer Service Keys Stores
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0775"
+    recurse: true
+  loop:
+    - "{{ fdo_src }}/stores/manufacturer_keys"
+    - "{{ fdo_src }}/stores/manufacturing_sessions"
+    - "{{ fdo_src }}/stores/owner_vouchers"
+
+- name: Generate FDO keys and certificates
+  ansible.builtin.import_role:
+    name: generate_keys_and_certificates
+  vars:
+    generated_certs_dir: "{{ fdo_src }}/keys"
+  when: generate_keys_and_certificates | bool
+
+- name: Create Manufacturing Server Config file
+  ansible.builtin.copy:
+    src: manufacturing-server.yml.j2
+    dest: "{{ fdo_src }}/manufacturing-server.conf.d/manufacturing-server.yml"
+    mode: "0644"
+    remote_src: true
+
+- name: Deploy manufacturing server as container
+  when:
+  - not rpm
+  - name: Setup registry auth
+    ansible.builtin.import_role: setup_registry_auth
+    vars:
+      registry_user: "{{ rhuser }}"
+      registry_password: "{{ rhpassword }}"
+
+  - name: Deploy FDO Server container 
+    ansible.builtin.import_role: deploy_fdo_server_container
+    vars:
+      description: "FDO Manufactuing Server"
+      container_image: registry.redhat.io/registry.redhat.io/rhel9/fdo-manufacturing-server
+      container_name: "manufacturing-server"
+      host_port: 8080
+      container_port: 8080
+      volumes:
+      - "{{ fdo_src }}/stores:/etc/fdo/stores:z"
+      - "{{ fdo_src }}/keys:/etc/fdo/keys:z"
+
+- name: Deploy manufacturing server rpm
+  when:
+  - rpm
+  ansible.builtin.import_role: deploy_fdo_server_rpm
+  vars:
+    server_name: "fdo-manufacturing-server"
+    server_port: 8080
+  
+
+    

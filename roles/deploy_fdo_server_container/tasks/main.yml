@@ -1,0 +1,60 @@
+---
+# Copyright: (c) 2023, Red Hat
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+- name: Create the quadlet file
+  ansible.builtin.template:
+    src: quadlet.container.j2
+    dest: "/etc/containers/systemd/{{ container_name }}.container"
+
+- name: Perform a systemd reload
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Validate quadlet files
+  ansible.builtin.shell: |
+    /usr/libexec/quadlet --dryrun
+  register: dryrun_result
+
+- name: Assert that there aren't any errors reported by quadlet --dryrun
+  ansible.builtin.assert:
+    that:
+    - dryrun_result.rc == 0
+    success_msg: "Quadlet generator reported no errors, proceeding to enable and start the service."
+    fail_msg: "Quadlet generator reported errors: {{ dryrun_result.stdout }}" 
+
+- name: Start firewalld service
+  ansible.builtin.service:
+    name: firewalld
+    state: started
+  
+- name: Open Required Ports
+  ansible.posix.firewalld:
+    port: "{{ host_port }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+
+- name: Set SELinux port type
+  ansible.builtin.shell: semanage port -a -t http_port_t -p tcp {{ host_port }}
+  failed_when: false
+
+- name: Reload firewall
+  ansible.builtin.systemd:
+    name: firewalld
+    state: reloaded
+
+- name: Enable and Start service
+  ansible.builtin.systemd:
+    name: "{{ container_name }}"
+    state: started
+    enabled: true
+
+- name: Check service started successfully
+  ansible.builtin.systemd:
+    name: "{{ container_name }}"
+  register: service_status
+  failed_when: false
+
+- name: debug service status
+  ansible.builtin.debug:
+    var: service_status

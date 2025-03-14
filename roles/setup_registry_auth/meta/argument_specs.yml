@@ -1,0 +1,19 @@
+# Copyright: (c) 2023, Red Hat
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+argument_specs:
+  main:
+    version_added: 1.0.0
+    short_description: Setup Podman to authenticate with registry.redhat.io
+    description:
+      - Configure podman to authenticate with registry.redhat.io to pull official container images for FDO server components.
+    options:
+      registry_user:
+        description:
+        - User id to login to registry.redhat.io
+        type: str
+        default: ""
+      registry_password:
+        description:
+        - Password to login to registry.redhat.io
+        type: str
+        default: ""

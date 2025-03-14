@@ -1,0 +1,15 @@
+---
+# Copyright: (c) 2023, Red Hat
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+- name: Encode username:password in Base64
+  ansible.builtin.set_fact:
+    auth: "{{ registry_user }}:{{ registry_password }}"
+    encoded_auth: "{{ auth | b64encode }}"
+- name: Create the auth.json file
+  ansible.builtin.template:
+    src: auth.json.j2
+    dest: "/etc/containers/auth.json"
+- name: Restart podman
+  ansible.builtin.service:
+    name: podman
+    state: restarted

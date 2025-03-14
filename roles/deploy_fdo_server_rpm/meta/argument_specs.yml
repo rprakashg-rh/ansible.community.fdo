@@ -1,0 +1,19 @@
+---
+# Copyright: (c) 2023, Red Hat
+# GNU General Public License v3.0+ (see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt)
+argument_specs:
+  main:
+    version_added: 1.0.0
+    short_description: Install and start FDO server RPM on host
+    description:
+    - Install specified FDO server RPM on host
+    options:
+      server_name:
+        description:
+        - FDO Server
+        type: str
+      server_port:
+        description:
+        - Server port
+        type: int
+        

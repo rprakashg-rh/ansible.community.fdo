@@ -1,0 +1,16 @@
+[Unit]
+Description={{ description }}
+After=network-online.target
+
+[Container]
+Image={{ container_image }}
+ContainerName={{ container_name }}
+PublishPort={{ host_port }}:{{ container_port }}
+Pull=always
+Environment=LOG_LEVEL=info
+{% for vol in volumes %}
+Volume={{ vol }}
+{% endfor %}
+
+[Install]
+WantedBy=multi-user.target
