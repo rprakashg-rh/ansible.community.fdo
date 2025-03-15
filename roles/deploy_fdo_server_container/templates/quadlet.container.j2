@@ -8,6 +8,7 @@ ContainerName={{ container_name }}
 PublishPort={{ host_port }}:{{ container_port }}
 Pull=always
 Environment=LOG_LEVEL=info
+Environment=REGISTRY_AUTH_FILE=/etc/containers/auth.json
 {% for vol in volumes %}
 Volume={{ vol }}
 {% endfor %}
