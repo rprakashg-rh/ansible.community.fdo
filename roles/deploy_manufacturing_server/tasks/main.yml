@@ -34,6 +34,7 @@
     - "{{ fdo_src }}/stores/manufacturer_keys"
     - "{{ fdo_src }}/stores/manufacturing_sessions"
     - "{{ fdo_src }}/stores/owner_vouchers"
+    - "{{ fdo_src }}/manufacturing-server.conf.d"
 
 - name: Generate FDO keys and certificates
   ansible.builtin.import_role:
@@ -50,7 +51,7 @@
 
 - name: Deploy manufacturing server as container
   when:
-  - not rpm
+  - not rpm | bool
   block:
   - name: Setup registry auth
     ansible.builtin.import_role: 
@@ -74,7 +75,7 @@
 
 - name: Deploy manufacturing server rpm
   when:
-  - rpm
+  - rpm | bool
   ansible.builtin.import_role: 
     name: deploy_fdo_server_rpm
   vars:
