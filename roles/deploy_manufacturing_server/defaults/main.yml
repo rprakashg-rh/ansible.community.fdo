@@ -4,6 +4,7 @@
 
 fdo_src: /etc/fdo
 generate_keys_and_certificates: true
+rpm: true
 
 ### manufacturing-server.yml ###
 manufacturing_server_session_store_driver_path: "{{ fdo_src }}/stores/manufacturing_sessions"
