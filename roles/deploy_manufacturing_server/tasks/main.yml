@@ -54,13 +54,15 @@
   - not rpm
   block:
   - name: Setup registry auth
-    ansible.builtin.import_role: setup_registry_auth
+    ansible.builtin.import_role: 
+      name: setup_registry_auth
     vars:
       registry_user: "{{ rhuser }}"
       registry_password: "{{ rhpassword }}"
 
   - name: Deploy FDO Server container 
-    ansible.builtin.import_role: deploy_fdo_server_container
+    ansible.builtin.import_role: 
+      name: deploy_fdo_server_container
     vars:
       description: "FDO Manufactuing Server"
       container_image: registry.redhat.io/registry.redhat.io/rhel9/fdo-manufacturing-server
@@ -74,7 +76,8 @@
 - name: Deploy manufacturing server rpm
   when:
   - rpm
-  ansible.builtin.import_role: deploy_fdo_server_rpm
+  ansible.builtin.import_role: 
+    name: deploy_fdo_server_rpm
   vars:
     server_name: "fdo-manufacturing-server"
     server_port: 8080
