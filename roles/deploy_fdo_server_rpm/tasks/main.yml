@@ -34,6 +34,7 @@
 
   - name: Enable and start the server
     ansible.builtin.systemd:
+      name: "{{ server_name }}"
       state: started
       enabled: true
   
