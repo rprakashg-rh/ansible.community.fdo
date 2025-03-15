@@ -43,7 +43,7 @@
   when: generate_keys_and_certificates | bool
 
 - name: Create Manufacturing Server Config file
-  ansible.builtin.copy:
+  ansible.builtin.template:
     src: manufacturing-server.yml.j2
     dest: "{{ fdo_src }}/manufacturing-server.conf.d/manufacturing-server.yml"
     mode: "0644"
