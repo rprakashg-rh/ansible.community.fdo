@@ -52,6 +52,7 @@
 - name: Deploy manufacturing server as container
   when:
   - not rpm
+  block:
   - name: Setup registry auth
     ansible.builtin.import_role: setup_registry_auth
     vars:
