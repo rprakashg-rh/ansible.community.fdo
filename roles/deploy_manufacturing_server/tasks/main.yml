@@ -47,7 +47,6 @@
     src: manufacturing-server.yml.j2
     dest: "{{ fdo_src }}/manufacturing-server.conf.d/manufacturing-server.yml"
     mode: "0644"
-    remote_src: true
 
 - name: Deploy manufacturing server as container
   when:
