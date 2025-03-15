@@ -12,7 +12,7 @@
       - podman
 
 - name: Start podman service
-  ansbile.builtin.systemd:
+  ansible.builtin.systemd:
     name: podman
     state: started
     enabled: true
