@@ -70,6 +70,10 @@ argument_specs:
           - ...
         type: str
         default: 127.0.0.1 # change to rendezvous server ip
+      manufacturing_server_rendezvous_info_dns:
+        description:
+        - Rendezvous server DNS
+        type: str
       manufacturing_server_rendezvous_info_owner_port:
         description:
           - ...
